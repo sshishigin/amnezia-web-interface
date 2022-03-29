@@ -1,6 +1,7 @@
 import subprocess
+from time import sleep
 
-from settings import CA_CERT_PATH, CLIENT_CERT_FOLDER, PRIVATE_KEY_FOLDER, PKI_PATH
+from settings import CA_CERT_PATH, CLIENT_CERT_FOLDER, PRIVATE_KEY_FOLDER, PKI_PATH, TA_KEY_PATH
 
 
 class Container:
@@ -30,7 +31,8 @@ class EasyRSA:
                  f"| " \
                  f"easyrsa --passin=file:dh.pem --passout=file:dh.pem  build-client-full {client_name}"
         self.container.exec(script)
-
+        sleep(5)
+        return self.get_clients_data(client_name)
 
     def get_clients_data(self, client_name):
         ca_cert = self.container.get_file_content(CA_CERT_PATH)
@@ -39,4 +41,6 @@ class EasyRSA:
 
         private_key = self.container.get_file_content(f"{PRIVATE_KEY_FOLDER}/{client_name}.key")
 
-        return {"CA": ca_cert, "client_certificate": client_cert, "pk": private_key}
+        ta_key = self.container.get_file_content(TA_KEY_PATH)
+
+        return {"CA": ca_cert, "client_certificate": client_cert, "pk": private_key, "ta": ta_key}

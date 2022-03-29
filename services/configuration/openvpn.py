@@ -1,8 +1,8 @@
-from OpenSSL import crypto
+from copy import copy
 
 from services.configuration.general import Configurator
 from services.helpers import EasyRSA, Container
-from settings import PKI_PATH, OPENVPN_CONTAINER_ID
+from settings import OPENVPN_CONTAINER_ID
 
 template = \
 """
@@ -48,10 +48,24 @@ class OpenVPNConfigurator(Configurator):
     def __init__(self):
         self.container = Container(OPENVPN_CONTAINER_ID)
 
-    def generate_config(self, client_name):
-        rsa = EasyRSA(PKI_PATH, container=self.container)
-        rsa.create_new_client(client_name)
+    def generate_configuration(self, client_name, platform="linux"):
+        rsa = EasyRSA(self.container)
+        data = rsa.create_new_client(client_name)
+        data.update({"platform": platform})
+        config = self.__build_config(data)
+        return config
 
+    def __build_config(self, data):
+        config = copy(template)
+
+        config.replace("$OPENVPN_CA_CERT", data.get("CA"))
+        config.replace("$OPENVPN_CLIENT_CERT", data.get("client_certificate"))
+        config.replace("$OPENVPN_PRIV_KEY", data.get("pk"))
+        config.replace("$OPENVPN_TA_KEY", data.get("ta"))
+        if data.get("platform") != "windows":
+            config.replace("block-outside-dns", "")
+
+        return config
 
 
 
