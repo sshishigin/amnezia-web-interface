@@ -10,7 +10,7 @@ class Container:
     def exec(self, script, with_output=False):
         docker_exec = f"docker exec -it {self.id} {script}"
         if with_output:
-            return subprocess.check_output(docker_exec.split(" "))
+            return subprocess.check_output(docker_exec.split(" ")).decode("utf-8")
         subprocess.call(docker_exec)
 
     def upload_file(self):
