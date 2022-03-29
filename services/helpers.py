@@ -8,7 +8,7 @@ class Container:
         self.id = container_id
 
     def exec(self, script, with_output=False):
-        docker_exec = f"docker exec -it {script}"
+        docker_exec = f"docker exec -it {self.id} {script}"
         if with_output:
             return subprocess.check_output(docker_exec.split(" "))
         subprocess.call(docker_exec)
