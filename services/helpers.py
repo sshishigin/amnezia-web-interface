@@ -1,6 +1,6 @@
 import subprocess
 
-from settings import CA_CERT_PATH, CLIENT_CERT_FOLDER, PRIVATE_KEY_FOLDER
+from settings import CA_CERT_PATH, CLIENT_CERT_FOLDER, PRIVATE_KEY_FOLDER, PKI_PATH
 
 
 class Container:
@@ -21,8 +21,8 @@ class Container:
 
 
 class EasyRSA:
-    def __init__(self, pki_path: str, container):
-        self.path = pki_path
+    def __init__(self, container):
+        self.path = PKI_PATH
         self.container = container
 
     def create_new_client(self, client_name):
@@ -38,3 +38,5 @@ class EasyRSA:
         client_cert = self.container.get_file_content(f"{CLIENT_CERT_FOLDER}/{client_name}.crt")
 
         private_key = self.container.get_file_content(f"{PRIVATE_KEY_FOLDER}/{client_name}.key")
+
+        return {"CA": ca_cert, "client_certificate": client_cert, "pk": private_key}
