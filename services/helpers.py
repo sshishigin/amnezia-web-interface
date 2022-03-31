@@ -20,7 +20,7 @@ class Container:
         subprocess.call(docker_exec)
 
     def exec_easyrsa(self, client_name):
-        cmd_2 = f"easyrsa --passin=file:dh.pem --passout=file:dh.pem  build-client-full {client_name}"
+        cmd_2 = f"easyrsa --passin=file:dh.pem --passout=file:dh.pem  build-client-full {client_name} nopass"
         cmd_1 = f"docker exec -it {self.id} cd /opt/amnezia/openvpn | {cmd_2}".split(" ")
         subprocess.call(cmd_1, stdout=subprocess.PIPE)
 
