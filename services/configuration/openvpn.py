@@ -59,9 +59,9 @@ class OpenVPNClientConfigurator(Configurator):
         )
         config = self.__build_config(data)
 
-        with open(f"configs/{client_name}.ovpn", "w+") as f:
+        with open(f"config_src/{client_name}.ovpn", "w+") as f:
             print(config, file=f)
-            return FileResponse(f"configs/{client_name}")
+            return FileResponse(f"config_src/{client_name}")
 
     def __build_config(self, data):
         config = template
