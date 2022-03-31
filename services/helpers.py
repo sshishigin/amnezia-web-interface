@@ -19,11 +19,6 @@ class Container:
 
         subprocess.call(docker_exec)
 
-    def exec_easyrsa(self, client_name):
-        cmd_2 = f"easyrsa --passin=file:dh.pem --passout=file:dh.pem  build-client-full {client_name} nopass"
-        cmd_1 = f"docker exec -it {self.id} cd /opt/amnezia/openvpn | {cmd_2}".split(" ")
-        subprocess.call(cmd_1, stdout=subprocess.PIPE)
-
     def upload_file(self):
         pass
 
@@ -37,7 +32,8 @@ class EasyRSA:
         self.container = container
 
     def create_new_client(self, client_name):
-        self.container.exec_easyrsa(client_name)
+        cmd = f"cd /opt/amnezia/openvpn | easyrsa --passin=file:dh.pem --passout=file:dh.pem  build-client-full {client_name} nopass"
+        self.container.exec(cmd, with_output=True)
         sleep(5)
         return self.get_clients_data(client_name)
 
