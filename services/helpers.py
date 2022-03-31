@@ -42,3 +42,15 @@ class EasyRSA:
         ta_key = self.container.get_file_content(TA_KEY_PATH)
 
         return {"CA": ca_cert, "client_certificate": client_cert, "pk": private_key, "ta": ta_key}
+
+
+def get_container_id(container_name):
+    cmd = ['docker', 'ps', '-a']
+    ps = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    cmd = ['grep', container_name]
+    grep = subprocess.Popen(cmd, stdin=ps.stdout, stdout=subprocess.PIPE,
+                            encoding='utf-8')
+    ps.stdout.close()
+    output, _ = grep.communicate()
+    python_processes = output.split('\n')
+    return output.split(" ")[0]
