@@ -32,9 +32,9 @@ class EasyRSA:
         self.container = container
 
     def create_new_client(self, client_name):
-        cmd = f"cd /opt/amnezia/openvpn | easyrsa --passin=file:dh.pem --passout=file:dh.pem  build-client-full {client_name} nopass"
+        cmd = f"cd /opt/amnezia/openvpn | easyrsa --passin=file:dh.pem --passout=file:dh.pem build-client-full {client_name} nopass"
         self.container.exec(cmd, with_output=True)
-        sleep(5)
+        sleep(10)
         return self.get_clients_data(client_name)
 
     def get_clients_data(self, client_name):
