@@ -22,6 +22,14 @@ class Container:
     def upload_file(self):
         pass
 
+    def _exec_rsa_(self, script):
+        cmd = "docker exec -it bash -c".split()
+        cmd.append(script)
+        try:
+            subprocess.check_output(cmd)
+        except subprocess.CalledProcessError as e:
+            pprint({field: getattr(e, field) for field in dir(e) if not field.startswith("__")})
+
     def get_file_content(self, path):
         return self.exec(f"cat {path}", with_output=True)
 
@@ -32,8 +40,8 @@ class EasyRSA:
         self.container = container
 
     def create_new_client(self, client_name):
-        cmd = f'bash -c "cd /opt/amnezia/openvpn && easyrsa --passin=file:dh.pem --passout=file:dh.pem build-client-full {client_name} nopass"'
-        self.container.exec(cmd, with_output=True)
+        cmd = '"cd /opt/amnezia/openvpn && easyrsa --passin=file:dh.pem --passout=file:dh.pem build-client-full fuckme  nopass"'
+        self.container._exec_rsa_(cmd)
         sleep(10)
         return self.get_clients_data(client_name)
 
