@@ -8,15 +8,17 @@ class Container:
     def __init__(self, container_id):
         self.id = container_id
 
-    def exec(self, script):
+    def exec(self, script, with_output=False):
         docker_exec = f"docker exec -it {self.id} {script}"
-        return subprocess.run(docker_exec, capture_output=True).stdout.decode("utf-8")
+        if with_output:
+            return subprocess.check_output(docker_exec.split(" ")).decode("utf-8")
+        subprocess.call(docker_exec)
 
     def upload_file(self):
         pass
 
     def get_file_content(self, path):
-        return self.exec(f"cat {path}")
+        return self.exec(f"cat {path}", with_output=True)
 
 
 class EasyRSA:
