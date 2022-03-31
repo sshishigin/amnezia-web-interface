@@ -1,4 +1,5 @@
 import subprocess
+from pprint import pprint
 from time import sleep
 
 from settings import CA_CERT_PATH, CLIENT_CERT_FOLDER, PRIVATE_KEY_FOLDER, PKI_PATH, TA_KEY_PATH
@@ -11,7 +12,11 @@ class Container:
     def exec(self, script, with_output=False):
         docker_exec = f"docker exec -it {self.id} {script}"
         if with_output:
-            return subprocess.check_output(docker_exec.split(" ")).decode("utf-8")
+            try:
+                return subprocess.check_output(docker_exec.split(" ")).decode("utf-8")
+            except subprocess.CalledProcessError as e:
+                pprint({field: getattr(e, field) for field in dir(e) if not field.startswith("__")})
+
         subprocess.call(docker_exec)
 
     def exec_easyrsa(self, client_name):
