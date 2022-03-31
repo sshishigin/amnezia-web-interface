@@ -15,13 +15,10 @@ class Container:
         subprocess.call(docker_exec)
 
     def exec_easyrsa(self, client_name):
-        cmd = f"docker exec -it' {self.id} cd /opt/amnezia/openvpn".split(" ")
-        s = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-        cmd = f"easyrsa --passin=file:dh.pem --passout=file:dh.pem  build-client-full {client_name}".split(" ")
-        out = subprocess.Popen(cmd, stdin=s.stdout, stdout=subprocess.PIPE,
-                                encoding='utf-8')
+        cmd_2 = f"easyrsa --passin=file:dh.pem --passout=file:dh.pem  build-client-full {client_name}".split(" ")
+        cmd_1 = f"docker exec -it' {self.id} cd /opt/amnezia/openvpn | {cmd_2}".split(" ")
+        s = subprocess.Popen(cmd_1, stdout=subprocess.PIPE)
         s.stdout.close()
-        output, _ = out.communicate()
 
     def upload_file(self):
         pass
