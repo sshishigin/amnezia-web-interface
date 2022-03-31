@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from services.configuration.openvpn import OpenVPNConfigurator
+from services.configuration.openvpn import OpenVPNClientConfigurator
 
 app = FastAPI()
 
@@ -11,4 +11,4 @@ async def say_hello(name: str):
 
 @app.get("/openvpn/{client_name}")
 async def get_new_config(client_name: str, platform: str):
-    return OpenVPNConfigurator().generate_configuration(client_name, platform)
+    return OpenVPNClientConfigurator().generate_configuration(client_name, platform)
