@@ -32,7 +32,7 @@ class EasyRSA:
         self.container = container
 
     def create_new_client(self, client_name):
-        cmd = f"cd /opt/amnezia/openvpn | easyrsa --passin=file:dh.pem --passout=file:dh.pem build-client-full {client_name} nopass"
+        cmd = f'bash - c "cd /opt/amnezia/openvpn && easyrsa --passin=file:dh.pem --passout=file:dh.pem build-client-full {client_name} nopass"'
         self.container.exec(cmd, with_output=True)
         sleep(10)
         return self.get_clients_data(client_name)
@@ -50,9 +50,9 @@ class EasyRSA:
 
 
 def get_container_id(container_name):
-    cmd = ['docker', 'ps', '-a']
+    cmd = "docker ps -a".split(" ")
     ps = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-    cmd = ['grep', container_name]
+    cmd = f"grep {container_name}".split(" ")
     grep = subprocess.Popen(cmd, stdin=ps.stdout, stdout=subprocess.PIPE,
                             encoding='utf-8')
     ps.stdout.close()
