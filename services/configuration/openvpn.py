@@ -1,8 +1,7 @@
 from copy import copy
 
 from services.configuration.general import Configurator
-from services.helpers import EasyRSA, Container
-from settings import OPENVPN_CONTAINER_ID
+from services.helpers import EasyRSA, Container, get_container_id
 
 template = \
 """
@@ -46,6 +45,7 @@ $OPENVPN_TA_KEY
 
 class OpenVPNConfigurator(Configurator):
     def __init__(self):
+        OPENVPN_CONTAINER_ID = get_container_id("openvpn")
         self.container = Container(OPENVPN_CONTAINER_ID)
 
     def generate_configuration(self, client_name, platform="linux"):
