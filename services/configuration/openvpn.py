@@ -1,5 +1,7 @@
 from copy import copy
 
+from starlette.responses import FileResponse
+
 from services.configuration.general import Configurator
 from services.helpers import EasyRSA, Container, get_container_id
 from settings import HOST_IP, PRIMARY_DNS, SECONDARY_DNS
@@ -56,7 +58,10 @@ class OpenVPNClientConfigurator(Configurator):
             OpenVPNServerConfigurator().get_server_settings()
         )
         config = self.__build_config(data)
-        return config
+
+        with open(f"configs/{client_name}.ovpn", "w") as f:
+            print(config, file=f)
+            return FileResponse(f"configs/{client_name}")
 
     def __build_config(self, data):
         config = template
@@ -75,7 +80,6 @@ class OpenVPNClientConfigurator(Configurator):
 
         if data.get("platform") != "windows":
             config = config.replace("block-outside-dns", "")
-        print(config)
         return config
 
 
