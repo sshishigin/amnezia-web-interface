@@ -43,7 +43,7 @@ $OPENVPN_TA_KEY
 """
 
 
-class OpenVPNConfigurator(Configurator):
+class OpenVPNClientConfigurator(Configurator):
     def __init__(self):
         OPENVPN_CONTAINER_ID = get_container_id("openvpn")
         self.container = Container(OPENVPN_CONTAINER_ID)
@@ -57,6 +57,7 @@ class OpenVPNConfigurator(Configurator):
 
     def __build_config(self, data):
         config = template
+        OpenVPNServerConfigurator().get_server_settings()
 
         config = config.replace("$OPENVPN_CA_CERT", data.get("CA"))
         config = config.replace("$OPENVPN_CLIENT_CERT", data.get("client_certificate"))
@@ -67,5 +68,14 @@ class OpenVPNConfigurator(Configurator):
         print(config)
         return config
 
+
+class OpenVPNServerConfigurator(Configurator):
+    def __init__(self):
+        OPENVPN_CONTAINER_ID = get_container_id("openvpn")
+        self.container = Container(OPENVPN_CONTAINER_ID)
+
+    def get_server_settings(self):
+        server_config = self.container.get_file_content("/opt/amnezia/openvpn/server.conf")
+        print(server_config, type(server_config))
 
 
