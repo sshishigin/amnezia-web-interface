@@ -56,15 +56,15 @@ class OpenVPNConfigurator(Configurator):
         return config
 
     def __build_config(self, data):
-        config = copy(template)
+        config = template
 
-        config.replace("$OPENVPN_CA_CERT", data.get("CA"))
-        config.replace("$OPENVPN_CLIENT_CERT", data.get("client_certificate"))
-        config.replace("$OPENVPN_PRIV_KEY", data.get("pk"))
-        config.replace("$OPENVPN_TA_KEY", data.get("ta"))
+        config = config.replace("$OPENVPN_CA_CERT", data.get("CA"))
+        config = config.replace("$OPENVPN_CLIENT_CERT", data.get("client_certificate"))
+        config = config.replace("$OPENVPN_PRIV_KEY", data.get("pk"))
+        config = config.replace("$OPENVPN_TA_KEY", data.get("ta"))
         if data.get("platform") != "windows":
-            config.replace("block-outside-dns", "")
-
+            config = config.replace("block-outside-dns", "")
+        print(config)
         return config
 
 
